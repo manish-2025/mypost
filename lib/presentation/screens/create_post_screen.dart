@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/create_post_cubit/create_post_cubit.dart';
-import 'package:mypost/presentation/screens/image_screen.dart';
+import 'package:mypost/presentation/screens/image/image_category_screen.dart';
 import 'package:mypost/presentation/screens/post_view_screen.dart';
 import 'package:mypost/presentation/screens/quote_screens/quote_category_screen.dart';
 import 'package:screenshot/screenshot.dart';
@@ -199,7 +199,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           onTap: () async {
             String bgImage = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ImageScreen()),
+              MaterialPageRoute(builder: (context) => ImageCategoryScreen()),
             );
 
             createPostCubit.updateState(

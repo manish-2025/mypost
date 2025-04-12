@@ -8,7 +8,6 @@ import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/quote_cubit/fetch_quotes_cubit.dart';
-import 'package:mypost/presentation/screens/image_screen.dart';
 import 'package:mypost/presentation/screens/quote_screens/quote_list_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -86,19 +85,6 @@ class _QuoteCategoryScreenState extends State<QuoteCategoryScreen> {
                   buildCategoryCard(
                     title: AppConstants.attitudeQuote,
                     quoteData: fetchQuoteState.attitudeQuotesData,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ImageScreen()),
-                      );
-                    },
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Icon(Icons.navigate_next),
-                    ),
                   ),
                 ],
               )

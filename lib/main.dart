@@ -6,7 +6,8 @@ import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
 import 'package:mypost/data/entity/user_entity/user_entity.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/create_post_cubit/create_post_cubit.dart';
-import 'package:mypost/logic/image_cubit/image_cubit.dart';
+import 'package:mypost/logic/image_catagory_cubit/image_category_cubit.dart';
+import 'package:mypost/logic/image_list_cubit/image_list_cubit.dart';
 import 'package:mypost/logic/profile_cubit/profile_cubit.dart';
 import 'package:mypost/logic/quote_cubit/fetch_quotes_cubit.dart';
 import 'package:mypost/logic/toggle_cubit/toggle_cubit.dart';
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => FetchQuotesCubit()),
-        BlocProvider(create: (_) => ImageCubit()),
+        BlocProvider(create: (_) => ImageCategoryCubit()),
+        BlocProvider(create: (_) => ImageListCubit()),
         BlocProvider(create: (_) => ProfileCubit()),
         BlocProvider(create: (_) => CreatePostCubit()),
         BlocProvider(create: (_) => ToggleCubit()),

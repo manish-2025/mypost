@@ -4,7 +4,6 @@ class ImageModel {
   ImageModel({this.images});
 
   ImageModel.fromJson(Map<String, dynamic> json) {
-    print("object => json => $json");
     if (json['images'] != null) {
       images = List<ImageItem>.from(
         json['images'].map((item) => ImageItem.fromJson(item)),
@@ -31,7 +30,6 @@ class ImageItem {
     id = int.tryParse(json['id'].toString());
     previewURL = json['previewURL'].toString();
 
-    // Handle non-string largeImageURL (like {} object)
     final dynamic largeURL = json['largeImageURL'];
     if (largeURL is String) {
       largeImageURL = getDirectUrl(largeURL: largeURL);
