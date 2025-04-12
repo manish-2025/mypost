@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mypost/common/api_constants.dart';
 import 'package:mypost/common/hive_constants.dart';
-import 'package:mypost/data/entity/quote_entity.dart';
+import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
 import 'package:mypost/data/model/quote_model.dart';
 import 'package:mypost/data/repositories/api/api.dart';
 import 'package:mypost/globals.dart';

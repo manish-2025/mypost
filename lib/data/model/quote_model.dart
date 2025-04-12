@@ -1,5 +1,5 @@
 // ignore_for_file: annotate_overrides, overridden_fields
-import 'package:mypost/data/entity/quote_entity.dart';
+import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
 
 class QuoteModel {
   final QuoteEntity quoteData;
