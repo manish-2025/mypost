@@ -11,7 +11,6 @@ import 'package:mypost/presentation/screens/image/image_category_screen.dart';
 import 'package:mypost/presentation/screens/post_view_screen.dart';
 import 'package:mypost/presentation/screens/quote_screens/quote_category_screen.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:sticker_view/stickerview.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -555,25 +554,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  buildStickerView({
-    required BuildContext context,
-    required CreatePostLoadedState loadedState,
-    required List<Sticker> stickerList,
-  }) {
-    print("object => loadedState- $loadedState");
-    return StickerView(
-      height: screenSize.height * 0.55,
-      width: screenSize.width * 0.9,
-      stickerList: List.generate(stickerList.length, (index) {
-        return Sticker(
-          id: index.toString(),
-          isText: true,
-          child: Text("Item $index"),
-        );
-      }),
     );
   }
 
