@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/logic/profile_cubit/profile_cubit.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
 
@@ -50,56 +51,116 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage:
-                            (profileCubit.profileImage != '')
-                                ? FileImage(File(profileCubit.profileImage))
-                                : null,
-                        child:
-                            (profileCubit.profileImage == '')
-                                ? Image.asset(
-                                  "assets/icons/camera_placeholder.png",
-                                  height: 60,
-                                  width: 60,
-                                )
-                                : null,
-                      ),
-                      Positioned(
-                        top: 5,
-                        right: 5,
-                        child: Visibility(
-                          visible: profileCubit.profileImage != '',
-                          child: GestureDetector(
-                            onTap: () {
-                              profileCubit.removeImage();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Colors.white,
-                              ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 5,
+                      top: 5,
+                      right: 10,
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBGColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white,
+                          ),
+                          height: 70,
+                          width: 70,
+                          clipBehavior: Clip.antiAlias,
+                          child:
+                              (profileCubit.profileImage == '')
+                                  ? Image.asset(
+                                    "assets/icons/camera-icon.png",
+                                    height: 60,
+                                    width: 60,
+                                  )
+                                  : Image.file(
+                                    File(profileCubit.profileImage),
+                                    height: 70,
+                                    width: 70,
+                                    fit: BoxFit.fill,
+                                  ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            profileCubit.getProfileImage();
+                          },
+                          child: Text(
+                            "Upload Profile Image",
+                            style: TextStyle(
+                              color: Colors.purple,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      profileCubit.getProfileImage();
-                    },
-                    child: const Text('Upload Profile Image'),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 5,
+                      top: 5,
+                      right: 10,
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBGColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white,
+                          ),
+                          height: 70,
+                          width: 70,
+                          clipBehavior: Clip.antiAlias,
+                          child:
+                              (profileCubit.businessLogo == '')
+                                  ? Image.asset(
+                                    "assets/icons/camera_placeholder.png",
+                                    height: 30,
+                                    width: 30,
+                                  )
+                                  : Image.file(
+                                    File(profileCubit.businessLogo),
+                                    height: 70,
+                                    width: 70,
+                                    fit: BoxFit.fill,
+                                  ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            profileCubit.getBusinessLogo();
+                          },
+                          child: Text(
+                            "Upload Business Logo",
+                            style: TextStyle(
+                              color: Colors.purple,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: profileCubit.businessNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Business Name',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   TextFormField(

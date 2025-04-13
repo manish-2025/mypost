@@ -25,6 +25,8 @@ class UserData extends UserEntity {
   String email;
   String image;
   String birthDay;
+  String businessName;
+  String businessLogo;
 
   UserData({
     required this.name,
@@ -33,6 +35,8 @@ class UserData extends UserEntity {
     required this.email,
     required this.image,
     required this.birthDay,
+    required this.businessName,
+    required this.businessLogo,
   }) : super(
          name: name,
          mobile: mobile,
@@ -40,6 +44,8 @@ class UserData extends UserEntity {
          email: email,
          image: image,
          birthDay: birthDay,
+         businessName: businessName,
+         businessLogo: businessLogo,
        );
 
   factory UserData.fromJson(Map<String, dynamic> json) {
@@ -50,6 +56,8 @@ class UserData extends UserEntity {
       email: json['email'],
       image: json['image'],
       birthDay: json['birthDay'],
+      businessName: json['businessName'],
+      businessLogo: json['businessLogo'],
     );
   }
   Map<String, dynamic> toJson() {

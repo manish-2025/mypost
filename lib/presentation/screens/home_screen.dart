@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/toggle_cubit/toggle_cubit.dart';
 import 'package:mypost/presentation/screens/create_post_screen.dart';
@@ -102,8 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Center(
                       child: Text(
                         userProfileData != null
-                            ? "Update Profile"
-                            : "Create Profile",
+                            ? AppConstants.updateProfile
+                            : AppConstants.createProfile,
                       ),
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/common/hive_constants.dart';
 import 'package:mypost/data/model/user_model.dart';
 import 'package:mypost/globals.dart';
@@ -13,11 +14,14 @@ part 'profile_state.dart';
 class ProfileCubit extends Cubit<double> {
   ProfileCubit() : super(1);
 
+  TextEditingController businessNameController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   TextEditingController occepationController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   String profileImage = '';
+  String businessLogo = '';
+
   final ImagePicker picker = ImagePicker();
   String? birthDay;
 
@@ -29,17 +33,27 @@ class ProfileCubit extends Cubit<double> {
     emit(Random().nextDouble());
   }
 
+  void getBusinessLogo() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      businessLogo = image.path;
+    }
+    emit(Random().nextDouble());
+  }
+
   Future<bool> saveUserData({required BuildContext context}) async {
     if (!validateFormData(context: context)) {
       return false;
     }
 
     Map<String, dynamic> userData = {
+      "businessName": businessNameController.text,
       "name": nameController.text,
       "mobile": mobileController.text,
       "occupation": occepationController.text,
       "email": emailController.text,
       "image": profileImage,
+      "businessLogo": businessLogo,
       "birthDay": birthDay,
     };
     try {
@@ -72,28 +86,39 @@ class ProfileCubit extends Cubit<double> {
   }
 
   bool validateFormData({required BuildContext context}) {
+    if (businessLogo == '') {
+      showSnacBar(message: AppConstants.selectBusinessLogo, context: context);
+      return false;
+    }
     if (profileImage == '') {
-      showSnacBar(message: "Select Profile Image", context: context);
+      showSnacBar(message: AppConstants.selectProfileImage, context: context);
+      return false;
+    }
+    if (businessNameController.text.isEmpty) {
+      showSnacBar(
+        message: AppConstants.enterValidBusinessName,
+        context: context,
+      );
       return false;
     }
     if (nameController.text.isEmpty) {
-      showSnacBar(message: "Enter a valid Name", context: context);
+      showSnacBar(message: AppConstants.enterValidName, context: context);
       return false;
     }
     if (mobileController.text.isEmpty) {
-      showSnacBar(message: "Enter a valid Mobile number", context: context);
+      showSnacBar(message: AppConstants.enterValidMobile, context: context);
       return false;
     }
     if (occepationController.text.isEmpty) {
-      showSnacBar(message: "Enter Occupation", context: context);
+      showSnacBar(message: AppConstants.enterOccupation, context: context);
       return false;
     }
     if (emailController.text.isEmpty) {
-      showSnacBar(message: "Enter vailid Email", context: context);
+      showSnacBar(message: AppConstants.enterValidEmail, context: context);
       return false;
     }
     if (birthDay == null || birthDay == '') {
-      showSnacBar(message: "Select your BirthDay", context: context);
+      showSnacBar(message: AppConstants.selectBirthDay, context: context);
       return false;
     }
     return true;
@@ -114,5 +139,7 @@ class ProfileCubit extends Cubit<double> {
     emailController.text = userProfileData?.email ?? '';
     birthDay = userProfileData?.birthDay ?? '';
     profileImage = userProfileData?.image ?? '';
+    businessLogo = userProfileData?.businessLogo ?? '';
+    businessNameController.text = userProfileData?.businessName ?? '';
   }
 }

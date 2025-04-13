@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -18,13 +19,20 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   ScreenshotController screenshotController = ScreenshotController();
   File? postFile;
   Uint8List? postByteData;
+  int quoteSize = 10;
+  double quoteTopPosition = 200;
+  bool showBusinessDetails = true;
+  bool showBusinessLogo = true;
+  bool showUserDetails = true;
+  bool showUserImage = true;
 
   void loadPostData() {
     emit(
       CreatePostLoadedState(
         random: Random().nextDouble(),
         bgImage: 'NA',
-        quote: 'NA',
+        quote:
+            'वज़ीरों से मत डर ए शहंशाह तूं हुकूमत का सरताज हैं, हारा भले ही तूं वक्त से है, दिलो में आज भी तेरा राज है!!',
       ),
     );
   }
@@ -48,7 +56,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     if (postByteData == null || postFile == null) {
       CustomSnackbar.show(
         snackbarType: SnackbarType.ERROR,
-        message: "Something went wronge",
+        message: AppConstants.errorSomethingWronge,
         context: context,
       );
       return;
@@ -61,14 +69,14 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       );
       CustomSnackbar.show(
         snackbarType: SnackbarType.SUCCESS,
-        message: "Post Downloaded",
+        message: AppConstants.postDownloaded,
         context: context,
       );
     } else {
       await Share.shareXFiles([XFile(postFile!.path)]);
       CustomSnackbar.show(
         snackbarType: SnackbarType.SUCCESS,
-        message: "Post Shared",
+        message: AppConstants.postShared,
         context: context,
       );
     }
@@ -80,10 +88,10 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     String? image,
   }) async {
     emit(
-      loadedState.copyWith(
-        randon: Random().nextDouble(),
+      CreatePostLoadedState(
         bgImage: image ?? loadedState.bgImage,
         quote: quote ?? loadedState.quote,
+        random: Random().nextDouble(),
       ),
     );
 

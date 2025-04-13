@@ -50,6 +50,13 @@ class _PostViewScreenState extends State<PostViewScreen> {
             child: Image.file(widget.imageFile),
           ),
           builDButtonWidget(context: context),
+          SizedBox(height: 10),
+          Container(
+            height: 120,
+            width: screenSize.width,
+            decoration: BoxDecoration(color: Colors.green),
+            child: Center(child: Text("Advertisement")),
+          ),
         ],
       ),
     );

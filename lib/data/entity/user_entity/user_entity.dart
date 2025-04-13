@@ -15,6 +15,10 @@ class UserEntity extends HiveObject {
   final String image;
   @HiveField(5)
   final String birthDay;
+  @HiveField(6)
+  final String businessLogo;
+  @HiveField(7)
+  final String businessName;
 
   UserEntity({
     required this.name,
@@ -23,6 +27,8 @@ class UserEntity extends HiveObject {
     required this.email,
     required this.image,
     required this.birthDay,
+    required this.businessName,
+    required this.businessLogo,
   });
 
   UserEntity copyWith({
@@ -32,6 +38,8 @@ class UserEntity extends HiveObject {
     String? email,
     String? image,
     String? birthDay,
+    String? businessName,
+    String? businessLogo,
   }) {
     return UserEntity(
       name: name ?? this.name,
@@ -40,6 +48,8 @@ class UserEntity extends HiveObject {
       email: email ?? this.email,
       image: image ?? this.image,
       birthDay: birthDay ?? this.birthDay,
+      businessName: businessName ?? this.businessName,
+      businessLogo: businessLogo ?? this.businessLogo,
     );
   }
 }

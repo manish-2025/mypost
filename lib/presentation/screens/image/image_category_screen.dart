@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/data/model/drive_and_sheets/drive_folder_model.dart';
 import 'package:mypost/logic/image_catagory_cubit/image_category_cubit.dart';
 import 'package:mypost/presentation/screens/image/image_list_screen.dart';
@@ -26,7 +27,7 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Image Screen")),
+        appBar: AppBar(title: Text(AppConstants.selectCategory)),
         body: buildBodyWidget(context: context),
       ),
     );

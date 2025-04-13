@@ -11,11 +11,11 @@ class CreatePostInitial extends CreatePostState {}
 
 // ignore: must_be_immutable
 class CreatePostLoadedState extends CreatePostState {
-  String bgImage;
-  String quote;
+  final String bgImage;
+  final String quote;
   final double random;
 
-  CreatePostLoadedState({
+  const CreatePostLoadedState({
     required this.bgImage,
     required this.quote,
     required this.random,
