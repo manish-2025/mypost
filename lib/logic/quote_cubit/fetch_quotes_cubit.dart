@@ -37,7 +37,9 @@ class FetchQuotesCubit extends Cubit<FetchQuotesState> {
         final data = QuoteModel.fromJson(response.data);
         addToList(quote: data.quoteData, quoteLoadedState: quoteLoadedState);
       }
-    } catch (e) {}
+    } catch (e) {
+      throw "$e";
+    }
   }
 
   void addToList({

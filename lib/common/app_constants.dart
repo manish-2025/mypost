@@ -1,16 +1,17 @@
 class AppConstants {
+  static String titleCreateProfile = "Create Profile";
+  static String titleUpdateProfile = "Update Profile";
+  static String titleCreatePost = "Create Post";
+  static String titlePostImage = "Post Image";
+  static String titleQuoteScreen = "Quote Screen";
   static String successQuote = "Success Quote";
   static String loveQuote = "Love Quote";
   static String positiveQuote = "Positive Quote";
   static String sadQuote = "Sad Quote";
   static String motivationQuote = "Motivational Quote";
   static String attitudeQuote = "Attitude Quote";
-  static String createProfile = "Create Profile";
-  static String updateProfile = "Update Profile";
-  static String createPost = "Create Post";
   static String changeBackground = "Background";
   static String changeQuote = "Quote";
-  static String selectCategory = "Select Category";
   static String errorSomethingWronge = "Something went wronge";
   static String postDownloaded = "Post Downloaded";
   static String postShared = "Post Shared";
@@ -22,4 +23,20 @@ class AppConstants {
   static String enterOccupation = "Enter Occupation";
   static String enterValidEmail = "Enter vailid Email";
   static String selectBirthDay = "Select your BirthDay";
+  static String uploadBusinessLogo = "Upload Business Logo";
+  static String uploadProfileImage = "Upload Profile Image";
+  static String businessName = 'Business Name';
+  static String yourName = 'Your Name';
+  static String mobileNum = 'Mobile Number';
+  static String email = 'Your Email Id';
+  static String profileCreatedMsg = "Profile Created";
+  static String createProfile = "Create";
+  static String updateProfile = "Update";
+  static String selectBOD = "Select Birth Day";
+  static String share = "Share";
+  static String download = "Download";
+  static String titleSaveOrShare = "Save OR Share";
+  static String titleWelcomeScreen = "Welcome to MyPost";
+  static String welcomeMsg =
+      "Welcome to MyPost\nWe are here to help you to create youe own post easily.\n\nSo, Let's begin....Hurrrey.....!";
 }

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
+import 'package:mypost/presentation/screens/post_view_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -50,7 +51,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   void downloadAndSharePost({
-    required String actionType,
+    required POSTACTION actionType,
     required BuildContext context,
   }) async {
     if (postByteData == null || postFile == null) {
@@ -61,7 +62,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       );
       return;
     }
-    if (actionType == "download") {
+    if (actionType == POSTACTION.download) {
       await ImageGallerySaverPlus.saveImage(
         Uint8List.fromList(postByteData as List<int>),
         quality: 90,

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/toggle_cubit/toggle_cubit.dart';
+import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/screens/create_post_screen.dart';
 import 'package:mypost/presentation/screens/create_profile_screen.dart';
 
@@ -37,7 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(title: Text("Welcome to MyPost"), centerTitle: true),
+          appBar: AppBar(
+            title: Text(AppConstants.titleWelcomeScreen),
+            centerTitle: true,
+          ),
           body: buildBody(context: context),
         ),
       ),
@@ -69,20 +73,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                "Hi, ${userProfileData?.name} ",
+                userProfileData?.name != null
+                    ? "Hi, ${userProfileData?.name} "
+                    : "Hi, Hero ",
                 style: TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
               Text(
-                "Welcome to MyPost, We are here to help you to, Create youe own post easily",
+                AppConstants.welcomeMsg,
+                style: TextStyle(),
                 textAlign: TextAlign.center,
               ),
+              SizedBox(height: 20),
+              CommonWidgets().adWidget(
+                height: 120,
+                width: MediaQuery.of(context).size.width,
+              ),
               SizedBox(height: 10),
-              Text("So, Let's begin...."),
-              Text("Hurrrey.....!"),
-              SizedBox(height: 50),
-
-              GestureDetector(
+              CommonWidgets().commonButton(
+                width: 200,
+                title:
+                    userProfileData != null
+                        ? AppConstants.titleUpdateProfile
+                        : AppConstants.titleCreateProfile,
                 onTap: () async {
                   await Navigator.push(
                     context,
@@ -95,38 +108,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                   toggleCubit.refreshScreen();
                 },
-                child: Card(
-                  shadowColor: Colors.grey,
-                  child: SizedBox(
-                    height: 50,
-                    width: 200,
-                    child: Center(
-                      child: Text(
-                        userProfileData != null
-                            ? AppConstants.updateProfile
-                            : AppConstants.createProfile,
-                      ),
-                    ),
-                  ),
-                ),
               ),
-
-              SizedBox(height: 5),
-              GestureDetector(
+              CommonWidgets().commonButton(
+                width: 200,
+                title: AppConstants.titleCreatePost,
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => CreatePostScreen()),
                   );
                 },
-                child: Card(
-                  shadowColor: Colors.grey,
-                  child: SizedBox(
-                    height: 50,
-                    width: 200,
-                    child: Center(child: Text("Create Post")),
-                  ),
-                ),
               ),
             ],
           ),

@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/logic/create_post_cubit/create_post_cubit.dart';
+import 'package:mypost/presentation/common_widgets.dart';
+
+enum POSTACTION { share, download }
 
 class PostViewScreen extends StatefulWidget {
   final File imageFile;
@@ -31,34 +35,36 @@ class _PostViewScreenState extends State<PostViewScreen> {
     screenSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Save OR Share"), centerTitle: true),
+        appBar: AppBar(
+          title: Text(AppConstants.titleSaveOrShare),
+          centerTitle: true,
+        ),
         body: buildBody(context: context),
       ),
     );
   }
 
   Widget buildBody({required BuildContext context}) {
-    return Container(
+    return SizedBox(
       height: screenSize.height,
       width: screenSize.width,
-      color: Colors.red,
       child: Column(
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            height: screenSize.height * 0.6,
-            child: Image.file(widget.imageFile),
-          ),
+          imageView(),
+          Spacer(),
           builDButtonWidget(context: context),
-          SizedBox(height: 10),
-          Container(
-            height: 120,
-            width: screenSize.width,
-            decoration: BoxDecoration(color: Colors.green),
-            child: Center(child: Text("Advertisement")),
-          ),
+          Spacer(),
+          CommonWidgets().adWidget(height: 120, width: screenSize.width),
         ],
       ),
+    );
+  }
+
+  Widget imageView() {
+    return Container(
+      margin: EdgeInsets.only(left: 10, top: 10, right: 10),
+      height: screenSize.height * 0.6,
+      child: Image.file(widget.imageFile),
     );
   }
 
@@ -67,52 +73,27 @@ class _PostViewScreenState extends State<PostViewScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 5,
       children: [
-        buildActionButton(
-          title: "Share",
+        CommonWidgets().commonButton(
+          title: AppConstants.share,
           onTap: () {
             createPostCubit.downloadAndSharePost(
-              actionType: 'share',
+              actionType: POSTACTION.share,
               context: context,
             );
           },
-          buttonIcon: Icon(Icons.share, color: Colors.black),
+          buttonIcon: Icon(Icons.share, color: Colors.white),
         ),
-        buildActionButton(
-          title: "download",
+        CommonWidgets().commonButton(
+          title: AppConstants.download,
           onTap: () {
             createPostCubit.downloadAndSharePost(
-              actionType: 'download',
+              actionType: POSTACTION.download,
               context: context,
             );
           },
-          buttonIcon: Icon(Icons.download, color: Colors.black),
+          buttonIcon: Icon(Icons.download, color: Colors.white),
         ),
       ],
-    );
-  }
-
-  Widget buildActionButton({
-    required String title,
-    required Function() onTap,
-    required Widget buttonIcon,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        child: SizedBox(
-          height: 50,
-          width: 130,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buttonIcon,
-                Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -27,7 +27,7 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(AppConstants.selectCategory)),
+        appBar: AppBar(title: Text(AppConstants.titlePostImage)),
         body: buildBodyWidget(context: context),
       ),
     );

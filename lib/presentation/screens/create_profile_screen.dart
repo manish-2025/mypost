@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mypost/common/app_colors.dart';
+import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/logic/profile_cubit/profile_cubit.dart';
+import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -32,7 +34,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Create Profile"), centerTitle: true),
+        appBar: AppBar(
+          title: Text(
+            widget.isUpdating
+                ? AppConstants.titleUpdateProfile
+                : AppConstants.titleCreateProfile,
+          ),
+          centerTitle: true,
+        ),
         body: buildBody(context: context),
       ),
     );
@@ -51,153 +60,41 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 5,
-                      top: 5,
-                      right: 10,
-                      bottom: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBGColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          height: 70,
-                          width: 70,
-                          clipBehavior: Clip.antiAlias,
-                          child:
-                              (profileCubit.profileImage == '')
-                                  ? Image.asset(
-                                    "assets/icons/camera-icon.png",
-                                    height: 60,
-                                    width: 60,
-                                  )
-                                  : Image.file(
-                                    File(profileCubit.profileImage),
-                                    height: 70,
-                                    width: 70,
-                                    fit: BoxFit.fill,
-                                  ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            profileCubit.getProfileImage();
-                          },
-                          child: Text(
-                            "Upload Profile Image",
-                            style: TextStyle(
-                              color: Colors.purple,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  imagePicker(
+                    title: AppConstants.uploadProfileImage,
+                    imagePath: profileCubit.profileImage,
+                    onTap: () => profileCubit.getProfileImage(),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 5,
-                      top: 5,
-                      right: 10,
-                      bottom: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBGColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          height: 70,
-                          width: 70,
-                          clipBehavior: Clip.antiAlias,
-                          child:
-                              (profileCubit.businessLogo == '')
-                                  ? Image.asset(
-                                    "assets/icons/camera_placeholder.png",
-                                    height: 30,
-                                    width: 30,
-                                  )
-                                  : Image.file(
-                                    File(profileCubit.businessLogo),
-                                    height: 70,
-                                    width: 70,
-                                    fit: BoxFit.fill,
-                                  ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            profileCubit.getBusinessLogo();
-                          },
-                          child: Text(
-                            "Upload Business Logo",
-                            style: TextStyle(
-                              color: Colors.purple,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  imagePicker(
+                    title: AppConstants.uploadBusinessLogo,
+                    imagePath: profileCubit.businessLogo,
+                    onTap: () => profileCubit.getBusinessLogo(),
                   ),
                   const SizedBox(height: 20),
-                  TextFormField(
+                  CommonWidgets().commonTextFormField(
                     controller: profileCubit.businessNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Business Name',
-                      border: OutlineInputBorder(),
-                    ),
+                    lalbleText: AppConstants.businessName,
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
+                  CommonWidgets().commonTextFormField(
                     controller: profileCubit.nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Your Name',
-                      border: OutlineInputBorder(),
-                    ),
+                    lalbleText: AppConstants.yourName,
                   ),
-                  const SizedBox(height: 10),
-                  TextFormField(
+                  CommonWidgets().commonTextFormField(
                     controller: profileCubit.mobileController,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
-                      border: OutlineInputBorder(),
-                    ),
+                    lalbleText: AppConstants.mobileNum,
                   ),
-                  const SizedBox(height: 10),
-                  TextFormField(
+                  CommonWidgets().commonTextFormField(
                     controller: profileCubit.occepationController,
-                    decoration: const InputDecoration(
-                      labelText: 'Occupation',
-                      border: OutlineInputBorder(),
-                    ),
+                    lalbleText: AppConstants.enterOccupation,
                   ),
-                  const SizedBox(height: 10),
-                  TextFormField(
+                  CommonWidgets().commonTextFormField(
                     controller: profileCubit.emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Your Email Id',
-                      border: OutlineInputBorder(),
-                    ),
+                    lalbleText: AppConstants.email,
                   ),
-                  const SizedBox(height: 10),
                   _buildDateTile(context: context),
                   const SizedBox(height: 20),
-                  GestureDetector(
+                  CommonWidgets().commonButton(
                     onTap: () async {
                       bool ret = await profileCubit.saveUserData(
                         context: context,
@@ -205,19 +102,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       if (ret == true) {
                         CustomSnackbar.show(
                           snackbarType: SnackbarType.SUCCESS,
-                          message: "Profile Created",
+                          message: AppConstants.profileCreatedMsg,
                           context: context,
                         );
                         Navigator.pop(context);
                       }
                     },
-                    child: Card(
-                      child: SizedBox(
-                        height: 50,
-                        width: 140,
-                        child: Center(child: Text("Save Data")),
-                      ),
-                    ),
+                    title:
+                        widget.isUpdating
+                            ? AppConstants.updateProfile
+                            : AppConstants.createProfile,
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -229,24 +123,87 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     );
   }
 
+  Widget imagePicker({
+    required String title,
+    required String imagePath,
+    required void Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.only(left: 5, top: 5, right: 10, bottom: 5),
+        decoration: BoxDecoration(
+          color: AppColors.cardBGColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+              ),
+              height: 65,
+              width: 65,
+              clipBehavior: Clip.antiAlias,
+              child:
+                  (imagePath == '')
+                      ? Image.asset(
+                        "assets/icons/camera-icon.png",
+                        height: 60,
+                        width: 60,
+                      )
+                      : Image.file(
+                        File(imagePath),
+                        height: 70,
+                        width: 70,
+                        fit: BoxFit.cover,
+                      ),
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.purple,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDateTile({required BuildContext context}) {
     return GestureDetector(
       onTap: () {
         profileCubit.getBOD(context: context);
       },
       child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 45,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade400),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: ListTile(
-          title: Text(
-            profileCubit.birthDay ?? "Select Birth Day",
-            style: TextStyle(
-              color: profileCubit.birthDay == null ? Colors.grey : Colors.black,
-            ),
+        child: Center(
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              Text(
+                profileCubit.birthDay ?? AppConstants.selectBOD,
+                style: TextStyle(
+                  color:
+                      profileCubit.birthDay == null
+                          ? Colors.grey
+                          : Colors.black,
+                ),
+              ),
+              Spacer(),
+              Icon(Icons.calendar_month, color: Colors.black),
+              SizedBox(width: 10),
+            ],
           ),
-          // trailing: IconButton(icon: const Icon(Icons.close), onPressed: () {}),
         ),
       ),
     );

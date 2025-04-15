@@ -37,7 +37,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppConstants.createPost),
+          title: Text(AppConstants.titleCreatePost),
           centerTitle: true,
           actions: [downloadButton(), SizedBox(width: 20)],
         ),
@@ -71,10 +71,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return BlocBuilder<CreatePostCubit, CreatePostState>(
       builder: (context, loadedState) {
         if (loadedState is CreatePostLoadedState) {
-          return Container(
+          return SizedBox(
             height: screenSize.height,
             width: screenSize.width,
-            color: const Color.fromARGB(255, 231, 188, 238),
             child: Column(
               children: [
                 SizedBox(height: 10),
