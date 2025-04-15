@@ -35,11 +35,11 @@ Future<void> initThings() async {
   await Hive.openBox(HiveConstants.USER_DATA);
   userBox = Hive.box(HiveConstants.USER_DATA);
   userProfileData = userBox.get(HiveConstants.USER_DATA);
+  adEnable = false;
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: lightTheme,
         // darkTheme: darkTheme,
-        themeMode: ThemeMode.system, // or .dark / .light
+        themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
       ),

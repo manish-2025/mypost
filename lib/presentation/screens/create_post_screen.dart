@@ -7,6 +7,7 @@ import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/create_post_cubit/create_post_cubit.dart';
 import 'package:mypost/logic/toggle_cubit/toggle_cubit.dart';
+import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/screens/image/image_category_screen.dart';
 import 'package:mypost/presentation/screens/post_view_screen.dart';
 import 'package:mypost/presentation/screens/quote_screens/quote_category_screen.dart';
@@ -46,26 +47,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     );
   }
 
-  GestureDetector downloadButton() => GestureDetector(
-    onTap: () async {
-      File imageFile = await createPostCubit.captureAndProcessPost();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => PostViewScreen(
-                imageFile: imageFile,
-                createPostCubit: createPostCubit,
-              ),
-        ),
-      );
-    },
-    child: Image.asset(
-      "assets/icons/download.png",
-      height: 30,
-      color: Colors.white,
-    ),
-  );
+  Widget downloadButton() {
+    return GestureDetector(
+      onTap: download,
+      child: Image.asset(
+        'assets/icons/download.png',
+        height: 30,
+        color: Colors.white,
+      ),
+    );
+  }
 
   Widget buildBody({required BuildContext context}) {
     return BlocBuilder<CreatePostCubit, CreatePostState>(
@@ -77,35 +68,40 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             child: Column(
               children: [
                 SizedBox(height: 10),
-                Expanded(
-                  child: Screenshot(
-                    controller: createPostCubit.screenshotController,
-                    child: Container(
-                      width: screenSize.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Stack(
-                        children: [
-                          postImageWidget(loadedState),
-                          nameAndContactWidget(),
-                          businessDetailsWidget(),
-                          businessLogo(),
-                          userImageWidget(),
-                          quoteWidget(loadedState),
-                        ],
-                      ),
+                Screenshot(
+                  controller: createPostCubit.screenshotController,
+                  child: Container(
+                    width: screenSize.width * 0.8,
+                    height: screenSize.height * 0.5,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Stack(
+                      children: [
+                        postImageWidget(loadedState),
+                        nameAndContactWidget(),
+                        businessDetailsWidget(),
+                        businessLogo(),
+                        userImageWidget(),
+                        quoteWidget(loadedState),
+                      ],
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
-                Container(
-                  height: 120,
-                  width: screenSize.width,
-                  decoration: BoxDecoration(color: Colors.green),
-                  child: Center(child: Text("Advertisement")),
-                ),
+                Spacer(),
+                adEnable
+                    ? CommonWidgets().adWidget(
+                      height: 120,
+                      width: screenSize.width,
+                    )
+                    : CommonWidgets().commonButton(
+                      title: AppConstants.download,
+                      width: 200,
+                      onTap: download,
+                    ),
+                Spacer(),
                 SizedBox(height: 10),
                 buildButtonWidget(context: context, loadedState: loadedState),
               ],
@@ -228,13 +224,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }) {
     return Container(
       height: 60,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 169, 125, 250),
-      ),
+      decoration: BoxDecoration(color: AppColors.primaryColor),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          GestureDetector(
+          menuButtonWidget(
+            context: context,
+            loadedState: loadedState,
+            iconPath: 'assets/icons/image-icon.png',
+            title: AppConstants.changeBackground,
+            iconAndTitleColor: Colors.black,
             onTap: () async {
               String bgImage = await Navigator.push(
                 context,
@@ -245,28 +244,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 image: bgImage,
               );
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-              width: 70,
-              height: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/icons/image-icon.png', height: 25),
-                  Text(
-                    AppConstants.changeBackground,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
-                  ),
-                ],
-              ),
-            ),
           ),
-          GestureDetector(
+          menuButtonWidget(
+            context: context,
+            loadedState: loadedState,
+            iconPath: 'assets/icons/edit-text.png',
+            title: AppConstants.changeQuote,
+            iconAndTitleColor: Colors.black,
             onTap: () async {
               String quote = await Navigator.push(
                 context,
@@ -277,248 +261,32 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 quote: quote,
               );
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-              width: 70,
-              height: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/icons/edit-text.png', height: 25),
-                  Text(
-                    AppConstants.changeQuote,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
           ),
-          GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return BlocBuilder<ToggleCubit, double>(
-                    builder: (context, state) {
-                      return SizedBox(
-                        height: 100,
-                        width: screenSize.width,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [Text("Quote Font Size")],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      createPostCubit.quoteSize =
-                                          createPostCubit.quoteSize + 1;
-                                      createPostCubit.updateState(
-                                        loadedState: loadedState,
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      "assets/icons/icon-plus.png",
-                                      height: 30,
-                                    ),
-                                  ),
-                                  SizedBox(width: 20),
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (!(createPostCubit.quoteSize < 10)) {
-                                        createPostCubit.quoteSize =
-                                            createPostCubit.quoteSize - 1;
-                                        createPostCubit.updateState(
-                                          loadedState: loadedState,
-                                        );
-                                        ToggleCubit().refreshScreen();
-                                      }
-                                    },
-                                    child: Image.asset(
-                                      "assets/icons/icon-minus.png",
-                                      height: 30,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 20),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
+          menuButtonWidget(
+            context: context,
+            loadedState: loadedState,
+            onTap: () async {
+              fontBottomModel(context, loadedState);
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-              width: 70,
-              height: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/icons/font-size.png', height: 25),
-                  Text(
-                    "Font Size",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
+            iconPath: 'assets/icons/font-size.png',
+            title: AppConstants.fontSize,
+            iconAndTitleColor: Colors.black,
           ),
-          GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return BlocBuilder<ToggleCubit, double>(
-                    builder: (context, state) {
-                      return SizedBox(
-                        height: 200,
-                        width: screenSize.width,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Quote Position",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 30),
-                              GestureDetector(
-                                onTap: () {
-                                  createPostCubit.quoteTopPosition =
-                                      createPostCubit.quoteTopPosition - 10;
-                                  createPostCubit.updateState(
-                                    loadedState: loadedState,
-                                  );
-                                },
-                                child: Image.asset(
-                                  "assets/icons/icon-up.png",
-                                  height: 30,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              IgnorePointer(
-                                ignoring: true,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        createPostCubit.quoteSize =
-                                            createPostCubit.quoteSize + 1;
-                                        createPostCubit.updateState(
-                                          loadedState: loadedState,
-                                        );
-                                      },
-                                      child: Image.asset(
-                                        "assets/icons/icon-left.png",
-                                        height: 30,
-                                        color: Colors.black38,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Icon(Icons.circle, color: Colors.black),
-                                    SizedBox(width: 10),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (!(createPostCubit.quoteSize < 10)) {
-                                          createPostCubit.quoteSize =
-                                              createPostCubit.quoteSize - 1;
-                                          createPostCubit.updateState(
-                                            loadedState: loadedState,
-                                          );
-                                          ToggleCubit().refreshScreen();
-                                        }
-                                      },
-                                      child: Image.asset(
-                                        "assets/icons/icon-right.png",
-                                        height: 30,
-                                        color: Colors.black38,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  createPostCubit.quoteTopPosition =
-                                      createPostCubit.quoteTopPosition + 10;
-                                  createPostCubit.updateState(
-                                    loadedState: loadedState,
-                                  );
-                                },
-                                child: Image.asset(
-                                  "assets/icons/icon-down.png",
-                                  height: 30,
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
+          menuButtonWidget(
+            context: context,
+            loadedState: loadedState,
+            onTap: () async {
+              positionBottomModelSheet(context, loadedState);
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-              width: 70,
-              height: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/icons/position.png', height: 25),
-                  Text(
-                    "Position",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
+            iconPath: 'assets/icons/position.png',
+            title: AppConstants.position,
+            iconAndTitleColor: Colors.black,
           ),
-          GestureDetector(
-            onTap: () {
+
+          menuButtonWidget(
+            context: context,
+            loadedState: loadedState,
+            onTap: () async {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
@@ -530,26 +298,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
               );
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-              width: 70,
-              height: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/icons/hide.png', height: 25),
-                  Text(
-                    "Hide",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
+            iconPath: 'assets/icons/hide.png',
+            title: AppConstants.hide,
+            iconAndTitleColor: Colors.black,
           ),
         ],
       ),
@@ -617,6 +368,266 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       ),
     );
   }
+
+  Future<dynamic> positionBottomModelSheet(
+    BuildContext context,
+    CreatePostLoadedState loadedState,
+  ) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return BlocBuilder<ToggleCubit, double>(
+          builder: (context, state) {
+            return Container(
+              height: 220,
+              width: screenSize.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        Text(
+                          AppConstants.quotePosition,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        CommonWidgets().bottomSheetDoneButton(
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        createPostCubit.quoteTopPosition =
+                            createPostCubit.quoteTopPosition - 10;
+                        createPostCubit.updateState(loadedState: loadedState);
+                      },
+                      child: Image.asset(
+                        'assets/icons/icon-up.png',
+                        height: 30,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    IgnorePointer(
+                      ignoring: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              createPostCubit.quoteSize =
+                                  createPostCubit.quoteSize + 1;
+                              createPostCubit.updateState(
+                                loadedState: loadedState,
+                              );
+                            },
+                            child: Image.asset(
+                              'assets/icons/icon-left.png',
+                              height: 30,
+                              color: Colors.black38,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.circle, color: Colors.black),
+                          SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () {
+                              if (!(createPostCubit.quoteSize < 10)) {
+                                createPostCubit.quoteSize =
+                                    createPostCubit.quoteSize - 1;
+                                createPostCubit.updateState(
+                                  loadedState: loadedState,
+                                );
+                                ToggleCubit().refreshScreen();
+                              }
+                            },
+                            child: Image.asset(
+                              'assets/icons/icon-right.png',
+                              height: 30,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () {
+                        createPostCubit.quoteTopPosition =
+                            createPostCubit.quoteTopPosition + 10;
+                        createPostCubit.updateState(loadedState: loadedState);
+                      },
+                      child: Image.asset(
+                        'assets/icons/icon-down.png',
+                        height: 30,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<dynamic> fontBottomModel(
+    BuildContext context,
+    CreatePostLoadedState loadedState,
+  ) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return BlocBuilder<ToggleCubit, double>(
+          builder: (context, state) {
+            return SizedBox(
+              height: 150,
+              width: screenSize.width,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        Text(
+                          AppConstants.fontSize,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        CommonWidgets().bottomSheetDoneButton(
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            createPostCubit.quoteSize =
+                                createPostCubit.quoteSize + 1;
+                            createPostCubit.updateState(
+                              loadedState: loadedState,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/icons/icon-plus.png',
+                            height: 30,
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () {
+                            if (!(createPostCubit.quoteSize < 10)) {
+                              createPostCubit.quoteSize =
+                                  createPostCubit.quoteSize - 1;
+                              createPostCubit.updateState(
+                                loadedState: loadedState,
+                              );
+                              ToggleCubit().refreshScreen();
+                            }
+                          },
+                          child: Image.asset(
+                            'assets/icons/icon-minus.png',
+                            height: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 20),
+                    Spacer(),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget menuButtonWidget({
+    required BuildContext context,
+    required CreatePostLoadedState loadedState,
+    required void Function() onTap,
+    required String iconPath,
+    required String title,
+    required Color iconAndTitleColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+        width: 70,
+        height: 50,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(iconPath, height: 25, color: iconAndTitleColor),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 9,
+                color: iconAndTitleColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  download() async {
+    File imageFile = await createPostCubit.captureAndProcessPost();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => PostViewScreen(
+              imageFile: imageFile,
+              createPostCubit: createPostCubit,
+            ),
+      ),
+    );
+  }
 }
 
 class CustomBottomModelSheet extends StatefulWidget {
@@ -664,7 +675,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "- Hide/Show User Details -",
+                  AppConstants.showOrHidePostDetails,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
               ],
@@ -690,7 +701,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
                       ),
 
                   SizedBox(width: 20),
-                  Text("Business Details"),
+                  Text(AppConstants.businessDetails),
                 ],
               ),
             ),
@@ -715,7 +726,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
                       ),
 
                   SizedBox(width: 20),
-                  Text("Business Logo"),
+                  Text(AppConstants.businessLogo),
                 ],
               ),
             ),
@@ -739,7 +750,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
                         color: Colors.black,
                       ),
                   SizedBox(width: 20),
-                  Text("User Details"),
+                  Text(AppConstants.userDetails),
                 ],
               ),
             ),
@@ -764,7 +775,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
                       ),
 
                   SizedBox(width: 20),
-                  Text("User Image"),
+                  Text(AppConstants.userImage),
                 ],
               ),
             ),
@@ -775,7 +786,7 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
                 color: AppColors.cardBGColor,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Text("Done"),
+                  child: Text(AppConstants.done),
                 ),
               ),
             ),

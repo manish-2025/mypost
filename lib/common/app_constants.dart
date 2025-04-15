@@ -39,4 +39,14 @@ class AppConstants {
   static String titleWelcomeScreen = "Welcome to MyPost";
   static String welcomeMsg =
       "Welcome to MyPost\nWe are here to help you to create youe own post easily.\n\nSo, Let's begin....Hurrrey.....!";
+  static String fontSize = "Font Size";
+  static String quotePosition = "Quote Position";
+  static String position = "Position";
+  static String hide = "Hide";
+  static String showOrHidePostDetails = "- Hide/Show User Details -";
+  static String businessDetails = "Business Details";
+  static String businessLogo = "Business Logo";
+  static String userDetails = "User Details";
+  static String userImage = "User Image";
+  static String done = "Done";
 }

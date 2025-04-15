@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
+import 'package:mypost/globals.dart';
 import 'package:mypost/presentation/screens/quote_screens/quote_list_screen.dart';
 
 class CommonWidgets {
@@ -53,7 +54,7 @@ class CommonWidgets {
     );
   }
 
-  Widget commonButton({
+  commonButton({
     required String title,
     required Function() onTap,
     Widget? buttonIcon,
@@ -91,7 +92,7 @@ class CommonWidgets {
 
   adWidget({double? height, double? width}) {
     return Visibility(
-      visible: true,
+      visible: adEnable,
       child: Container(
         height: height ?? 120,
         width: width ?? 400,
@@ -132,6 +133,24 @@ class CommonWidgets {
             spacing: 5,
             children: [Text(title), Text(quoteData.length.toString())],
           ),
+        ),
+      ),
+    );
+  }
+
+  bottomSheetDoneButton({required void Function() onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(right: 8),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.borderColor),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          "Done",
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
         ),
       ),
     );

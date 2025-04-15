@@ -6,3 +6,4 @@ late Box quotesBox;
 late Box userBox;
 List<QuoteEntity> quotesDataList = [];
 UserEntity? userProfileData;
+bool adEnable = false;

@@ -20,10 +20,10 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   ScreenshotController screenshotController = ScreenshotController();
   File? postFile;
   Uint8List? postByteData;
-  int quoteSize = 10;
+  int quoteSize = 15;
   double quoteTopPosition = 200;
-  bool showBusinessDetails = true;
-  bool showBusinessLogo = true;
+  bool showBusinessDetails = false;
+  bool showBusinessLogo = false;
   bool showUserDetails = true;
   bool showUserImage = true;
 
@@ -31,7 +31,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(
       CreatePostLoadedState(
         random: Random().nextDouble(),
-        bgImage: 'NA',
+        bgImage:
+            'https://drive.google.com/uc?export=view&id=1MlBfY0XoHonwA0BUnzxUZD_NjD7Z3iIA',
         quote:
             'वज़ीरों से मत डर ए शहंशाह तूं हुकूमत का सरताज हैं, हारा भले ही तूं वक्त से है, दिलो में आज भी तेरा राज है!!',
       ),
