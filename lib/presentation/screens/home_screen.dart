@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
               CommonWidgets().commonButton(
                 width: 200,
                 title: AppConstants.titleCreatePost,
-                onTap: () async {
+                onTap: () {
                   if (userProfileData != null) {
                     Navigator.push(
                       context,
@@ -121,8 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   } else {
-                    var data = await showAlertDialog(context);
-                    print("object => data $data");
+                    showAlertDialog(context);
                   }
                 },
               ),
