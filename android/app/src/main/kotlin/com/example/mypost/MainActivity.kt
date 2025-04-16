@@ -1,4 +1,4 @@
-package com.example.mypost
+package com.modezero.mypost
 
 import io.flutter.embedding.android.FlutterActivity
 

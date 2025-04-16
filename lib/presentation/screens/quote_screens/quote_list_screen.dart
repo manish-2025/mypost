@@ -51,18 +51,33 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
                   ),
                   SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
                         onTap: () {
-                          // Navigator.popUntil(context, (route) {
-                          //   return route.settings.name ==
-                          //       MaterialPageRoute(
-                          //         builder: (context) => CreatePostScreen(),
-                          //       );
-                          // });
                           Navigator.pop(context, quoteEntity.quote);
                         },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.cardBGColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.add, size: 16, color: Colors.black),
+                              SizedBox(width: 2),
+                              Text("Add", style: TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // SizedBox(width: 15),
+                      Visibility(
+                        visible: false,
                         child: Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 10,
@@ -74,47 +89,32 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.add, size: 16, color: Colors.black),
+                              Icon(Icons.copy, size: 16, color: Colors.black),
                               SizedBox(width: 2),
-                              Text("Add", style: TextStyle(fontSize: 12)),
+                              Text("Copy", style: TextStyle(fontSize: 12)),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(width: 15),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBGColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.copy, size: 16, color: Colors.black),
-                            SizedBox(width: 2),
-                            Text("Copy", style: TextStyle(fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 15),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBGColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.share, size: 16, color: Colors.black),
-                            SizedBox(width: 2),
-                            Text("Share", style: TextStyle(fontSize: 12)),
-                          ],
+                      // SizedBox(width: 15),
+                      Visibility(
+                        visible: false,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.cardBGColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.share, size: 16, color: Colors.black),
+                              SizedBox(width: 2),
+                              Text("Share", style: TextStyle(fontSize: 12)),
+                            ],
+                          ),
                         ),
                       ),
                     ],

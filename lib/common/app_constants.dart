@@ -49,4 +49,6 @@ class AppConstants {
   static String userDetails = "User Details";
   static String userImage = "User Image";
   static String done = "Done";
+  static String cancel = "Cancel";
+  static String create = "Continue";
 }

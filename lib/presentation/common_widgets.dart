@@ -119,7 +119,7 @@ class CommonWidgets {
                     QuoteListScreen(title: title, quoteData: quoteData),
           ),
         );
-        if (quotes != null && quotes != '') {
+        if (quotes != '') {
           Navigator.pop(context, quotes);
         }
       },

@@ -112,16 +112,75 @@ class _HomeScreenState extends State<HomeScreen> {
               CommonWidgets().commonButton(
                 width: 200,
                 title: AppConstants.titleCreatePost,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreatePostScreen()),
-                  );
+                onTap: () async {
+                  if (userProfileData != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreatePostScreen(),
+                      ),
+                    );
+                  } else {
+                    var data = await showAlertDialog(context);
+                    print("object => data $data");
+                  }
                 },
               ),
             ],
           ),
         );
+      },
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text(AppConstants.cancel),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(AppConstants.create),
+      onPressed: () async {
+        Navigator.pop(context, true);
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    CreateProfileScreen(isUpdating: userProfileData != null),
+          ),
+        );
+        toggleCubit.refreshScreen();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Notice",
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              color: Colors.amber,
+              fontWeight: FontWeight.bold,
+              fontSize: 26,
+            ),
+          ),
+        ],
+      ),
+      content: Text("You have to create profile to use this feature."),
+      actions: [cancelButton, continueButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
       },
     );
   }
