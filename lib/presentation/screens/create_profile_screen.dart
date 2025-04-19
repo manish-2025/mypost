@@ -110,8 +110,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     },
                     title:
                         widget.isUpdating
-                            ? AppConstants.updateProfile
-                            : AppConstants.createProfile,
+                            ? AppConstants.update
+                            : AppConstants.create,
                   ),
                   const SizedBox(height: 20),
                 ],

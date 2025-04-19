@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,46 +132,53 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   showAlertDialog(BuildContext context) {
-    Widget cancelButton = TextButton(
-      child: Text(AppConstants.cancel),
-      onPressed: () {
-        Navigator.pop(context, false);
-      },
-    );
-    Widget continueButton = TextButton(
-      child: Text(AppConstants.create),
-      onPressed: () async {
-        Navigator.pop(context, true);
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    CreateProfileScreen(isUpdating: userProfileData != null),
-          ),
-        );
-        toggleCubit.refreshScreen();
-      },
-    );
-
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Notice",
+            AppConstants.notice,
             style: TextStyle(
               decoration: TextDecoration.underline,
-              color: Colors.amber,
+              decorationColor: Colors.red,
+              color: Colors.red.shade300,
               fontWeight: FontWeight.bold,
               fontSize: 26,
             ),
           ),
         ],
       ),
-      content: Text("You have to create profile to use this feature."),
-      actions: [cancelButton, continueButton],
+      content: Text(
+        AppConstants.noticeMessage,
+        style: TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        CommonWidgets().commonButton(
+          width: 60,
+          height: 30,
+          fSize: 11,
+          title: AppConstants.cancel,
+          onTap: () => Navigator.pop(context),
+        ),
+        CommonWidgets().commonButton(
+          width: 60,
+          height: 30,
+          fSize: 11,
+          title: AppConstants.create,
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateProfileScreen(isUpdating: false),
+              ),
+            );
+          },
+        ),
+      ],
     );
 
     // show the dialog

@@ -30,8 +30,7 @@ class AppConstants {
   static String mobileNum = 'Mobile Number';
   static String email = 'Your Email Id';
   static String profileCreatedMsg = "Profile Created";
-  static String createProfile = "Create";
-  static String updateProfile = "Update";
+  static String update = "Update";
   static String selectBOD = "Select Birth Day";
   static String share = "Share";
   static String download = "Download";
@@ -50,5 +49,8 @@ class AppConstants {
   static String userImage = "User Image";
   static String done = "Done";
   static String cancel = "Cancel";
-  static String create = "Continue";
+  static String create = "Create";
+  static String notice = "Notice";
+  static String noticeMessage =
+      "You have to create profile to use this feature.";
 }

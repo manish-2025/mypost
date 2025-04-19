@@ -60,6 +60,7 @@ class CommonWidgets {
     Widget? buttonIcon,
     double? height,
     double? width,
+    double? fSize,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -78,7 +79,7 @@ class CommonWidgets {
                   style: TextStyle(
                     color: AppColors.buttonTextColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: fSize ?? 16,
                   ),
                 ),
                 SizedBox.shrink(),
