@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/data/model/drive_and_sheets/drive_folder_model.dart';
 import 'package:mypost/logic/image_catagory_cubit/image_category_cubit.dart';
-import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/screens/image/image_list_screen.dart';
 
 class ImageCategoryScreen extends StatefulWidget {
@@ -59,7 +59,7 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
                     source: ImageSource.camera,
                   );
                   if (image != null) {
-                    newFile = await CommonWidgets().cropImage(
+                    newFile = await cropImage(
                       context: context,
                       imageFile: image,
                     );
@@ -86,7 +86,7 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
                     source: ImageSource.gallery,
                   );
                   if (image != null) {
-                    newFile = await CommonWidgets().cropImage(
+                    newFile = await cropImage(
                       context: context,
                       imageFile: image,
                     );
@@ -235,4 +235,43 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
       ),
     );
   }
+
+  Future<File?> cropImage({
+    required BuildContext context,
+    required XFile imageFile,
+  }) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPresetCustom(),
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Cropper',
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPresetCustom(), // IMPORTANT: iOS supports only one custom aspect ratio in preset list
+          ],
+        ),
+        WebUiSettings(context: context),
+      ],
+    );
+    return croppedFile != null ? File(croppedFile.path) : null;
+  }
+}
+
+class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
+  @override
+  (int, int)? get data => (2, 3);
+
+  @override
+  String get name => '2x3 (customized)';
 }

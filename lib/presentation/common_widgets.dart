@@ -160,33 +160,4 @@ class CommonWidgets {
       ),
     );
   }
-
-  Future<File?> cropImage({
-    required BuildContext context,
-    required XFile imageFile,
-  }) async {
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: imageFile.path,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
-          toolbarWidgetColor: Colors.white,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-          ],
-        ),
-        IOSUiSettings(
-          title: 'Cropper',
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-          ],
-        ),
-        WebUiSettings(context: context),
-      ],
-    );
-    return croppedFile != null ? File(croppedFile.path) : null;
-  }
 }
