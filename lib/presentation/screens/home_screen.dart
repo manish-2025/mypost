@@ -54,77 +54,80 @@ class _HomeScreenState extends State<HomeScreen> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 10,
-            children: [
-              Visibility(
-                visible:
-                    (userProfileData != null && userProfileData?.image != null),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage:
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 10,
+              children: [
+                Visibility(
+                  visible:
                       (userProfileData != null &&
-                              userProfileData?.image != null)
-                          ? FileImage(File(userProfileData!.image))
-                          : null,
+                          userProfileData?.image != null),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage:
+                        (userProfileData != null &&
+                                userProfileData?.image != null)
+                            ? FileImage(File(userProfileData!.image))
+                            : null,
+                  ),
                 ),
-              ),
-              Text(
-                userProfileData?.name != null
-                    ? "Hi, ${userProfileData?.name} "
-                    : "Hi, Hero ",
-                style: TextStyle(fontSize: 25),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                AppConstants.welcomeMsg,
-                style: TextStyle(),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              CommonWidgets().adWidget(
-                height: 120,
-                width: MediaQuery.of(context).size.width,
-              ),
-              SizedBox(height: 10),
-              CommonWidgets().commonButton(
-                width: 200,
-                title:
-                    userProfileData != null
-                        ? AppConstants.titleUpdateProfile
-                        : AppConstants.titleCreateProfile,
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => CreateProfileScreen(
-                            isUpdating: userProfileData != null,
-                          ),
-                    ),
-                  );
-                  toggleCubit.refreshScreen();
-                },
-              ),
-              CommonWidgets().commonButton(
-                width: 200,
-                title: AppConstants.titleCreatePost,
-                onTap: () {
-                  if (userProfileData != null) {
-                    Navigator.push(
+                Text(
+                  userProfileData?.name != null
+                      ? "Hi, ${userProfileData?.name} "
+                      : "Hi, Hero ",
+                  style: TextStyle(fontSize: 25),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  AppConstants.welcomeMsg,
+                  style: TextStyle(),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                CommonWidgets().adWidget(
+                  height: 120,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                SizedBox(height: 10),
+                CommonWidgets().commonButton(
+                  width: 200,
+                  title:
+                      userProfileData != null
+                          ? AppConstants.titleUpdateProfile
+                          : AppConstants.titleCreateProfile,
+                  onTap: () async {
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CreatePostScreen(),
+                        builder:
+                            (context) => CreateProfileScreen(
+                              isUpdating: userProfileData != null,
+                            ),
                       ),
                     );
-                  } else {
-                    showAlertDialog(context);
-                  }
-                },
-              ),
-            ],
+                    toggleCubit.refreshScreen();
+                  },
+                ),
+                CommonWidgets().commonButton(
+                  width: 200,
+                  title: AppConstants.titleCreatePost,
+                  onTap: () {
+                    if (userProfileData != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreatePostScreen(),
+                        ),
+                      );
+                    } else {
+                      showAlertDialog(context);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },

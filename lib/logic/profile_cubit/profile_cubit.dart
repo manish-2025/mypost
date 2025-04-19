@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/common/hive_constants.dart';
@@ -25,18 +27,40 @@ class ProfileCubit extends Cubit<double> {
   final ImagePicker picker = ImagePicker();
   String? birthDay;
 
-  void getProfileImage() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  void picCameraImage({
+    required BuildContext context,
+    required bool settingProfile,
+  }) async {
+    File? newFile;
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      profileImage = image.path;
+      newFile = await cropImage(context: context, imageFile: image);
+    }
+    if (newFile != null) {
+      if (settingProfile) {
+        profileImage = newFile.path;
+      } else {
+        businessLogo = newFile.path;
+      }
     }
     emit(Random().nextDouble());
   }
 
-  void getBusinessLogo() async {
+  void picGalleyImage({
+    required BuildContext context,
+    required bool settingProfile,
+  }) async {
+    File? newFile;
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      businessLogo = image.path;
+      newFile = await cropImage(context: context, imageFile: image);
+    }
+    if (newFile != null) {
+      if (settingProfile) {
+        profileImage = newFile.path;
+      } else {
+        businessLogo = newFile.path;
+      }
     }
     emit(Random().nextDouble());
   }
@@ -142,4 +166,43 @@ class ProfileCubit extends Cubit<double> {
     businessLogo = userProfileData?.businessLogo ?? '';
     businessNameController.text = userProfileData?.businessName ?? '';
   }
+
+  Future<File?> cropImage({
+    required BuildContext context,
+    required XFile imageFile,
+  }) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPresetCustom(),
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Cropper',
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPresetCustom(), // IMPORTANT: iOS supports only one custom aspect ratio in preset list
+          ],
+        ),
+        WebUiSettings(context: context),
+      ],
+    );
+    return croppedFile != null ? File(croppedFile.path) : null;
+  }
+}
+
+class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
+  @override
+  (int, int)? get data => (2, 3);
+
+  @override
+  String get name => '2x3 (customized)';
 }

@@ -53,4 +53,7 @@ class AppConstants {
   static String notice = "Notice";
   static String noticeMessage =
       "You have to create profile to use this feature.";
+  static String chooseImage = "Choose Image";
+  static String camera = "Camera";
+  static String gallery = "Gallery";
 }

@@ -32,17 +32,20 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.isUpdating
-                ? AppConstants.titleUpdateProfile
-                : AppConstants.titleCreateProfile,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.isUpdating
+                  ? AppConstants.titleUpdateProfile
+                  : AppConstants.titleCreateProfile,
+            ),
+            centerTitle: true,
           ),
-          centerTitle: true,
+          body: buildBody(context: context),
         ),
-        body: buildBody(context: context),
       ),
     );
   }
@@ -63,13 +66,22 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   imagePicker(
                     title: AppConstants.uploadProfileImage,
                     imagePath: profileCubit.profileImage,
-                    onTap: () => profileCubit.getProfileImage(),
+                    onTap:
+                        () => openCameraAndGalleryOption(
+                          context: context,
+                          settingProfile: true,
+                        ),
                   ),
                   const SizedBox(height: 10),
                   imagePicker(
                     title: AppConstants.uploadBusinessLogo,
                     imagePath: profileCubit.businessLogo,
-                    onTap: () => profileCubit.getBusinessLogo(),
+                    // onTap: () => profileCubit.getBusinessLogo(),
+                    onTap:
+                        () => openCameraAndGalleryOption(
+                          context: context,
+                          settingProfile: false,
+                        ),
                   ),
                   const SizedBox(height: 20),
                   CommonWidgets().commonTextFormField(
@@ -96,16 +108,17 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   const SizedBox(height: 20),
                   CommonWidgets().commonButton(
                     onTap: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       bool ret = await profileCubit.saveUserData(
                         context: context,
                       );
                       if (ret == true) {
+                        Navigator.pop(context);
                         CustomSnackbar.show(
                           snackbarType: SnackbarType.SUCCESS,
                           message: AppConstants.profileCreatedMsg,
                           context: context,
                         );
-                        Navigator.pop(context);
                       }
                     },
                     title:
@@ -204,6 +217,129 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               SizedBox(width: 10),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  openCameraAndGalleryOption({
+    required BuildContext context,
+    required bool settingProfile,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.all(10),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.dialogBGColor,
+              border: Border.all(color: AppColors.borderColor),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppConstants.chooseImage,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    imagePickerOptionWidget(
+                      context: context,
+                      settingProfile: settingProfile,
+                      title: AppConstants.camera,
+                      onTap: () {
+                        Navigator.pop(context);
+                        profileCubit.picCameraImage(
+                          context: context,
+                          settingProfile: settingProfile,
+                        );
+                      },
+                      icon: Icon(
+                        Icons.camera_alt_sharp,
+                        color: Colors.black,
+                        size: 35,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    imagePickerOptionWidget(
+                      context: context,
+                      settingProfile: settingProfile,
+                      title: AppConstants.gallery,
+                      onTap: () {
+                        Navigator.pop(context);
+                        profileCubit.picGalleyImage(
+                          context: context,
+                          settingProfile: settingProfile,
+                        );
+                      },
+                      icon: Icon(Icons.image, color: Colors.black, size: 35),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CommonWidgets().commonButton(
+                      width: 60,
+                      height: 25,
+                      fSize: 10,
+                      title: AppConstants.cancel,
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget imagePickerOptionWidget({
+    required BuildContext context,
+    required bool settingProfile,
+    required void Function()? onTap,
+    required String title,
+    required Widget icon,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: AppColors.borderColor),
+        ),
+        child: Column(
+          children: [
+            icon,
+            Text(
+              title,
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
