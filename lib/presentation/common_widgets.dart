@@ -1,6 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
+import 'package:cross_file/src/types/interface.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/data/entity/quote_entity/quote_entity.dart';
 import 'package:mypost/globals.dart';
@@ -155,5 +159,34 @@ class CommonWidgets {
         ),
       ),
     );
+  }
+
+  Future<File?> cropImage({
+    required BuildContext context,
+    required XFile imageFile,
+  }) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Cropper',
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+          ],
+        ),
+        WebUiSettings(context: context),
+      ],
+    );
+    return croppedFile != null ? File(croppedFile.path) : null;
   }
 }

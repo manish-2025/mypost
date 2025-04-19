@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/common/hive_constants.dart';
 import 'package:mypost/data/model/user_model.dart';
 import 'package:mypost/globals.dart';
+import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
 
 part 'profile_state.dart';
@@ -34,7 +34,10 @@ class ProfileCubit extends Cubit<double> {
     File? newFile;
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      newFile = await cropImage(context: context, imageFile: image);
+      newFile = await CommonWidgets().cropImage(
+        context: context,
+        imageFile: image,
+      );
     }
     if (newFile != null) {
       if (settingProfile) {
@@ -53,7 +56,10 @@ class ProfileCubit extends Cubit<double> {
     File? newFile;
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      newFile = await cropImage(context: context, imageFile: image);
+      newFile = await CommonWidgets().cropImage(
+        context: context,
+        imageFile: image,
+      );
     }
     if (newFile != null) {
       if (settingProfile) {
@@ -166,43 +172,4 @@ class ProfileCubit extends Cubit<double> {
     businessLogo = userProfileData?.businessLogo ?? '';
     businessNameController.text = userProfileData?.businessName ?? '';
   }
-
-  Future<File?> cropImage({
-    required BuildContext context,
-    required XFile imageFile,
-  }) async {
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: imageFile.path,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
-          toolbarWidgetColor: Colors.white,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPresetCustom(),
-          ],
-        ),
-        IOSUiSettings(
-          title: 'Cropper',
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPresetCustom(), // IMPORTANT: iOS supports only one custom aspect ratio in preset list
-          ],
-        ),
-        WebUiSettings(context: context),
-      ],
-    );
-    return croppedFile != null ? File(croppedFile.path) : null;
-  }
-}
-
-class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
-  @override
-  (int, int)? get data => (2, 3);
-
-  @override
-  String get name => '2x3 (customized)';
 }

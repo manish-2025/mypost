@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/data/model/drive_and_sheets/drive_folder_model.dart';
 import 'package:mypost/logic/image_catagory_cubit/image_category_cubit.dart';
+import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/screens/image/image_list_screen.dart';
 
 class ImageCategoryScreen extends StatefulWidget {
@@ -15,6 +20,7 @@ class ImageCategoryScreen extends StatefulWidget {
 
 class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
   late ImageCategoryCubit imageCategoryCubit;
+  late Size screenSize;
 
   @override
   void initState() {
@@ -25,6 +31,7 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text(AppConstants.titlePostImage)),
@@ -34,27 +41,86 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
   }
 
   buildBodyWidget({required BuildContext context}) {
-    return BlocBuilder<ImageCategoryCubit, ImageCategoryState>(
-      builder: (context, loadedState) {
-        if (loadedState is ImageCategoryLoadedState) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: buildCategoryList(
-              context: context,
-              loadedState: loadedState,
-            ),
-          );
-        }
-        if (loadedState is ImageCategoryLoadingState) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (loadedState is ImageCategoryErrorState) {
-          return Center(child: Text(loadedState.error));
-        }
-        return SizedBox.shrink();
-      },
+    return Container(
+      height: screenSize.height,
+      width: screenSize.width,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              imagePickerOptionWidget(
+                context: context,
+                title: AppConstants.camera,
+                onTap: () async {
+                  File? newFile;
+                  final XFile? image = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (image != null) {
+                    newFile = await CommonWidgets().cropImage(
+                      context: context,
+                      imageFile: image,
+                    );
+                  }
+                  if (newFile != null) {
+                    Navigator.pop(context, newFile.path);
+                  } else if (image != null) {
+                    Navigator.pop(context, image.path);
+                  }
+                },
+                icon: Icon(
+                  Icons.camera_alt_sharp,
+                  color: Colors.black,
+                  size: 35,
+                ),
+              ),
+              SizedBox(width: 20),
+              imagePickerOptionWidget(
+                context: context,
+                title: AppConstants.gallery,
+                onTap: () async {
+                  File? newFile;
+                  final XFile? image = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (image != null) {
+                    newFile = await CommonWidgets().cropImage(
+                      context: context,
+                      imageFile: image,
+                    );
+                  }
+                  if (newFile != null) {
+                    Navigator.pop(context, newFile.path);
+                  } else if (image != null) {
+                    Navigator.pop(context, image.path);
+                  }
+                },
+                icon: Icon(Icons.image, color: Colors.black, size: 35),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          BlocBuilder<ImageCategoryCubit, ImageCategoryState>(
+            builder: (context, loadedState) {
+              if (loadedState is ImageCategoryLoadedState) {
+                return buildCategoryList(
+                  context: context,
+                  loadedState: loadedState,
+                );
+              }
+              if (loadedState is ImageCategoryLoadingState) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (loadedState is ImageCategoryErrorState) {
+                return Center(child: Text(loadedState.error));
+              }
+              return SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -135,6 +201,36 @@ class _ImageCategoryScreenState extends State<ImageCategoryScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget imagePickerOptionWidget({
+    required BuildContext context,
+    required void Function()? onTap,
+    required String title,
+    required Widget icon,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: screenSize.width * 0.4,
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.cardBGColor,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: AppColors.borderColor),
+        ),
+        child: Column(
+          children: [
+            icon,
+            Text(
+              title,
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

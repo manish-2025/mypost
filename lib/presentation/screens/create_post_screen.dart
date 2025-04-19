@@ -120,10 +120,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       child:
           (loadedState.bgImage == 'NA')
               ? SizedBox()
-              : CachedNetworkImage(
+              : loadedState.bgImage.startsWith("http")
+              ? CachedNetworkImage(
                 imageUrl: loadedState.bgImage,
                 fit: BoxFit.fill,
-              ),
+              )
+              : Image.file(File(loadedState.bgImage), fit: BoxFit.fill),
     );
   }
 
