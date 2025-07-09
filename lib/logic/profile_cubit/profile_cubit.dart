@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mypost/common/app_colors.dart';
 import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/common/hive_constants.dart';
 import 'package:mypost/data/model/user_model.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/presentation/custom_widget/custom_snackbar.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart';
 
 part 'profile_state.dart';
 
@@ -26,8 +29,9 @@ class ProfileCubit extends Cubit<double> {
 
   final ImagePicker picker = ImagePicker();
   String? birthDay;
+  bool isGettingTransparentImage = false;
 
-  void picCameraImage({
+  Future<bool> picCameraImage({
     required BuildContext context,
     required bool settingProfile,
   }) async {
@@ -42,11 +46,19 @@ class ProfileCubit extends Cubit<double> {
       } else {
         businessLogo = newFile.path;
       }
+    } else if (image != null) {
+      if (settingProfile) {
+        profileImage = image.path;
+      } else {
+        businessLogo = image.path;
+      }
     }
+
     emit(Random().nextDouble());
+    return true;
   }
 
-  void picGalleyImage({
+  Future<bool?> picGalleyImage({
     required BuildContext context,
     required bool settingProfile,
   }) async {
@@ -61,8 +73,22 @@ class ProfileCubit extends Cubit<double> {
       } else {
         businessLogo = newFile.path;
       }
+    } else if (image != null) {
+      if (settingProfile) {
+        profileImage = image.path;
+      } else {
+        businessLogo = image.path;
+      }
+    } else if (image != null) {
+      if (settingProfile) {
+        profileImage = image.path;
+      } else {
+        businessLogo = image.path;
+      }
     }
+
     emit(Random().nextDouble());
+    return true;
   }
 
   Future<bool> saveUserData({required BuildContext context}) async {
@@ -176,7 +202,8 @@ class ProfileCubit extends Cubit<double> {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
+          toolbarColor: AppColors.primaryColor,
+          statusBarColor: AppColors.primaryColor,
           toolbarWidgetColor: Colors.white,
           aspectRatioPresets: [
             CropAspectRatioPreset.original,
@@ -196,6 +223,47 @@ class ProfileCubit extends Cubit<double> {
       ],
     );
     return croppedFile != null ? File(croppedFile.path) : null;
+  }
+
+  getTransparantImage() async {
+    isGettingTransparentImage = true;
+    emit(Random().nextDouble());
+    try {
+      List<MapEntry<String, dio.MultipartFile>> multipleImages = [];
+
+      multipleImages.add(
+        MapEntry(
+          "img",
+          await dio.MultipartFile.fromFile(
+            profileImage,
+            contentType: DioMediaType("image", "*/*"),
+          ),
+        ),
+      );
+
+      var formData = dio.FormData.fromMap({});
+      formData.files.addAll(multipleImages);
+
+      final response = await Dio().post(
+        'https://dmt.oceanmtechrnd.com/background-remover',
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            "Accept": 'application/json',
+          },
+        ),
+      );
+
+      if ((response.data['message'] == 'success') &&
+          (response.data['status'] == 200)) {
+        profileImage = response.data['url'];
+        isGettingTransparentImage = false;
+        emit(Random().nextDouble());
+      }
+    } catch (e) {
+      print("object => Exception : $e");
+    }
   }
 }
 

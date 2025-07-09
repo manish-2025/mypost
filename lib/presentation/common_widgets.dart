@@ -61,10 +61,14 @@ class CommonWidgets {
     double? height,
     double? width,
     double? fSize,
+    double? radious,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radious ?? 10),
+        ),
         color: AppColors.buttonColor,
         child: SizedBox(
           height: height ?? 45,

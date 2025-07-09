@@ -69,7 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundImage:
                         (userProfileData != null &&
                                 userProfileData?.image != null)
-                            ? FileImage(File(userProfileData!.image))
+                            ? userProfileData!.image.startsWith('http')
+                                ? NetworkImage(userProfileData!.image)
+                                : FileImage(File(userProfileData!.image))
                             : null,
                   ),
                 ),

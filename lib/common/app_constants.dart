@@ -42,7 +42,7 @@ class AppConstants {
   static String quotePosition = "Quote Position";
   static String position = "Position";
   static String hide = "Hide";
-  static String showOrHidePostDetails = "- Hide/Show User Details -";
+  static String showOrHidePostDetails = "- Show User Details -";
   static String businessDetails = "Business Details";
   static String businessLogo = "Business Logo";
   static String userDetails = "User Details";
@@ -56,4 +56,8 @@ class AppConstants {
   static String chooseImage = "Choose Image";
   static String camera = "Camera";
   static String gallery = "Gallery";
+  static String yes = "Yes";
+  static String no = "No";
+  static String background = "Background";
+  static String backgroundMessage = "Do you want to remove the background?";
 }

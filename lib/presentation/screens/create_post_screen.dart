@@ -7,6 +7,7 @@ import 'package:mypost/common/app_constants.dart';
 import 'package:mypost/globals.dart';
 import 'package:mypost/logic/create_post_cubit/create_post_cubit.dart';
 import 'package:mypost/logic/toggle_cubit/toggle_cubit.dart';
+import 'package:mypost/presentation/common_bottom_sheet.dart';
 import 'package:mypost/presentation/common_widgets.dart';
 import 'package:mypost/presentation/screens/image/image_category_screen.dart';
 import 'package:mypost/presentation/screens/post_view_screen.dart';
@@ -83,8 +84,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         nameAndContactWidget(),
                         businessDetailsWidget(),
                         businessLogo(),
-                        userImageWidget(),
                         quoteWidget(loadedState),
+                        userImageWidget(),
                       ],
                     ),
                   ),
@@ -137,7 +138,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         right: 0,
         child: Container(
           width: screenSize.width,
-          decoration: BoxDecoration(color: Colors.yellow),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.red, AppColors.primaryColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -149,7 +156,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   buildText(
                     text: userProfileData?.name ?? 'NA',
                     txtStyle: TextStyle(
-                      color: Colors.red,
+                      color: AppColors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                       height: 1.1,
@@ -183,10 +190,20 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       child: Positioned(
         bottom: 0,
         child: Container(
-          height: 80,
-          width: 70,
-          color: Colors.amber,
-          child: Image.file(File(userProfileData!.image), fit: BoxFit.fill),
+          height: 100,
+          width: 80,
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.primaryColor),
+            borderRadius: BorderRadius.only(topRight: Radius.circular(15)),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child:
+              userProfileData!.image.startsWith("http")
+                  ? CachedNetworkImage(
+                    imageUrl: userProfileData!.image,
+                    fit: BoxFit.fill,
+                  )
+                  : Image.file(File(userProfileData!.image), fit: BoxFit.fill),
         ),
       ),
     );
@@ -278,7 +295,110 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             context: context,
             loadedState: loadedState,
             onTap: () async {
-              positionBottomModelSheet(context, loadedState);
+              // positionBottomModelSheet(context, loadedState);
+              CommonBottomSheet.show(
+                context: context,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        Text(
+                          AppConstants.quotePosition,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        CommonWidgets().bottomSheetDoneButton(
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Divider(color: AppColors.borderColor),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        createPostCubit.quoteTopPosition =
+                            createPostCubit.quoteTopPosition - 10;
+                        createPostCubit.updateState(loadedState: loadedState);
+                      },
+                      child: Image.asset(
+                        'assets/icons/icon-up.png',
+                        height: 30,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    IgnorePointer(
+                      ignoring: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              createPostCubit.quoteSize =
+                                  createPostCubit.quoteSize + 1;
+                              createPostCubit.updateState(
+                                loadedState: loadedState,
+                              );
+                            },
+                            child: Image.asset(
+                              'assets/icons/icon-left.png',
+                              height: 30,
+                              color: Colors.black38,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.circle, color: Colors.black),
+                          SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () {
+                              if (!(createPostCubit.quoteSize < 10)) {
+                                createPostCubit.quoteSize =
+                                    createPostCubit.quoteSize - 1;
+                                createPostCubit.updateState(
+                                  loadedState: loadedState,
+                                );
+                                ToggleCubit().refreshScreen();
+                              }
+                            },
+                            child: Image.asset(
+                              'assets/icons/icon-right.png',
+                              height: 30,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () {
+                        createPostCubit.quoteTopPosition =
+                            createPostCubit.quoteTopPosition + 10;
+                        createPostCubit.updateState(loadedState: loadedState);
+                      },
+                      child: Image.asset(
+                        'assets/icons/icon-down.png',
+                        height: 30,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              );
             },
             iconPath: 'assets/icons/position.png',
             title: AppConstants.position,
@@ -289,15 +409,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             context: context,
             loadedState: loadedState,
             onTap: () async {
-              showModalBottomSheet(
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: (context) {
+              //     return CustomBottomModelSheet(
+              //       createPostCubit: createPostCubit,
+              //       screenSize: screenSize,
+              //       loadedState: loadedState,
+              //     );
+              //   },
+              // );
+              CommonBottomSheet.show(
                 context: context,
-                builder: (context) {
-                  return CustomBottomModelSheet(
-                    createPostCubit: createPostCubit,
-                    screenSize: screenSize,
-                    loadedState: loadedState,
-                  );
-                },
+                minChildSize: 0.2,
+                maxChildSize: 0.8,
+                initialChildSize: 0.4,
+                child: CustomBottomModelSheet(
+                  createPostCubit: createPostCubit,
+                  screenSize: screenSize,
+                  loadedState: loadedState,
+                ),
               );
             },
             iconPath: 'assets/icons/hide.png',
@@ -538,20 +669,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            createPostCubit.quoteSize =
-                                createPostCubit.quoteSize + 1;
-                            createPostCubit.updateState(
-                              loadedState: loadedState,
-                            );
-                          },
-                          child: Image.asset(
-                            'assets/icons/icon-plus.png',
-                            height: 30,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () {
                             if (!(createPostCubit.quoteSize < 10)) {
                               createPostCubit.quoteSize =
                                   createPostCubit.quoteSize - 1;
@@ -563,6 +680,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           },
                           child: Image.asset(
                             'assets/icons/icon-minus.png',
+                            height: 30,
+                          ),
+                        ),
+
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () {
+                            createPostCubit.quoteSize =
+                                createPostCubit.quoteSize + 1;
+                            createPostCubit.updateState(
+                              loadedState: loadedState,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/icons/icon-plus.png',
                             height: 30,
                           ),
                         ),
@@ -673,12 +805,20 @@ class _CustomBottomModelSheetState extends State<CustomBottomModelSheet> {
           children: [
             SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.arrow_back_ios),
+                ),
                 Text(
                   AppConstants.showOrHidePostDetails,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close_rounded),
                 ),
               ],
             ),

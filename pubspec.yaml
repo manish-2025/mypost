@@ -106,6 +106,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  
+  fonts:
+    - family: HindiFont
+      fonts:
+        - asset: assets/fonts/Lohit-Devanagari.ttf
+    - family: AgraNormal
+      fonts:
+        - asset: assets/fonts/Agra-Normal.ttf
+    - family: Devnew
+      fonts:
+        - asset: assets/fonts/Devnew.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

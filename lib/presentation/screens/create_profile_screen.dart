@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mypost/common/app_colors.dart';
@@ -20,6 +21,7 @@ class CreateProfileScreen extends StatefulWidget {
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late ProfileCubit profileCubit;
+  late Size screenSize;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
@@ -53,86 +56,103 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   buildBody({required BuildContext context}) {
     return BlocBuilder<ProfileCubit, double>(
       builder: (context, state) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  imagePicker(
-                    title: AppConstants.uploadProfileImage,
-                    imagePath: profileCubit.profileImage,
-                    onTap:
-                        () => openCameraAndGalleryOption(
-                          context: context,
-                          settingProfile: true,
-                        ),
-                  ),
-                  const SizedBox(height: 10),
-                  imagePicker(
-                    title: AppConstants.uploadBusinessLogo,
-                    imagePath: profileCubit.businessLogo,
-                    // onTap: () => profileCubit.getBusinessLogo(),
-                    onTap:
-                        () => openCameraAndGalleryOption(
-                          context: context,
-                          settingProfile: false,
-                        ),
-                  ),
-                  const SizedBox(height: 20),
-                  CommonWidgets().commonTextFormField(
-                    controller: profileCubit.businessNameController,
-                    lalbleText: AppConstants.businessName,
-                  ),
-                  CommonWidgets().commonTextFormField(
-                    controller: profileCubit.nameController,
-                    lalbleText: AppConstants.yourName,
-                  ),
-                  CommonWidgets().commonTextFormField(
-                    controller: profileCubit.mobileController,
-                    lalbleText: AppConstants.mobileNum,
-                  ),
-                  CommonWidgets().commonTextFormField(
-                    controller: profileCubit.occepationController,
-                    lalbleText: AppConstants.enterOccupation,
-                  ),
-                  CommonWidgets().commonTextFormField(
-                    controller: profileCubit.emailController,
-                    lalbleText: AppConstants.email,
-                  ),
-                  _buildDateTile(context: context),
-                  const SizedBox(height: 20),
-                  CommonWidgets().commonButton(
-                    onTap: () async {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      bool ret = await profileCubit.saveUserData(
-                        context: context,
-                      );
-                      if (ret == true) {
-                        Navigator.pop(context);
-                        CustomSnackbar.show(
-                          snackbarType: SnackbarType.SUCCESS,
-                          message: AppConstants.profileCreatedMsg,
-                          context: context,
-                        );
-                      }
-                    },
-                    title:
-                        widget.isUpdating
-                            ? AppConstants.update
-                            : AppConstants.create,
-                  ),
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
-          ),
+        return Stack(
+          children: [buildFormDataWidget(context), buildLoadingWidget()],
         );
       },
+    );
+  }
+
+  Widget buildFormDataWidget(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(color: Colors.white),
+      child: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              imagePicker(
+                title: AppConstants.uploadProfileImage,
+                imagePath: profileCubit.profileImage,
+                onTap: () {
+                  openCameraAndGalleryOption(
+                    context: context,
+                    settingProfile: true,
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              imagePicker(
+                title: AppConstants.uploadBusinessLogo,
+                imagePath: profileCubit.businessLogo,
+                onTap: () {
+                  openCameraAndGalleryOption(
+                    context: context,
+                    settingProfile: false,
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              CommonWidgets().commonTextFormField(
+                controller: profileCubit.businessNameController,
+                lalbleText: AppConstants.businessName,
+              ),
+              CommonWidgets().commonTextFormField(
+                controller: profileCubit.nameController,
+                lalbleText: AppConstants.yourName,
+              ),
+              CommonWidgets().commonTextFormField(
+                controller: profileCubit.mobileController,
+                lalbleText: AppConstants.mobileNum,
+              ),
+              CommonWidgets().commonTextFormField(
+                controller: profileCubit.occepationController,
+                lalbleText: AppConstants.enterOccupation,
+              ),
+              CommonWidgets().commonTextFormField(
+                controller: profileCubit.emailController,
+                lalbleText: AppConstants.email,
+              ),
+              _buildDateTile(context: context),
+              const SizedBox(height: 20),
+              CommonWidgets().commonButton(
+                onTap: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  bool ret = await profileCubit.saveUserData(context: context);
+                  if (ret == true) {
+                    Navigator.pop(context);
+                    CustomSnackbar.show(
+                      snackbarType: SnackbarType.SUCCESS,
+                      message: AppConstants.profileCreatedMsg,
+                      context: context,
+                    );
+                  }
+                },
+                title:
+                    widget.isUpdating
+                        ? AppConstants.update
+                        : AppConstants.create,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoadingWidget() {
+    return Visibility(
+      visible: profileCubit.isGettingTransparentImage,
+      child: Container(
+        width: screenSize.width,
+        height: screenSize.height,
+        decoration: BoxDecoration(color: Colors.black38),
+        child: Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 
@@ -162,11 +182,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               clipBehavior: Clip.antiAlias,
               child:
                   (imagePath == '')
-                      ? Image.asset(
-                        "assets/icons/camera-icon.png",
-                        height: 60,
-                        width: 60,
+                      ? Icon(
+                        title.contains("Profile") ? Icons.person : Icons.image,
+                        color: Colors.black,
+                        size: title.contains("Profile") ? 40 : 35,
                       )
+                      : imagePath.startsWith('http')
+                      ? CachedNetworkImage(imageUrl: imagePath)
                       : Image.file(
                         File(imagePath),
                         height: 70,
@@ -266,12 +288,19 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       context: context,
                       settingProfile: settingProfile,
                       title: AppConstants.camera,
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
-                        profileCubit.picCameraImage(
+
+                        await profileCubit.picCameraImage(
                           context: context,
                           settingProfile: settingProfile,
                         );
+                        // if (settingProfile) {
+                        //   bool? data = await _showConfirmDialog();
+                        //   if (data == true) {
+                        //     profileCubit.getTransparantImage();
+                        //   }
+                        // }
                       },
                       icon: Icon(
                         Icons.camera_alt_sharp,
@@ -284,12 +313,18 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       context: context,
                       settingProfile: settingProfile,
                       title: AppConstants.gallery,
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
                         profileCubit.picGalleyImage(
                           context: context,
                           settingProfile: settingProfile,
                         );
+                        if (settingProfile) {
+                          bool? data = await _showConfirmDialog();
+                          if (data == true) {
+                            profileCubit.getTransparantImage();
+                          }
+                        }
                       },
                       icon: Icon(Icons.image, color: Colors.black, size: 35),
                     ),
@@ -343,5 +378,62 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool?> _showConfirmDialog() async {
+    bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          content: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(AppConstants.background, style: TextStyle(fontSize: 18)),
+                SizedBox(height: 15),
+                Text(
+                  AppConstants.backgroundMessage,
+                  style: TextStyle(fontSize: 13, color: AppColors.greyColor),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CommonWidgets().commonButton(
+                      title: AppConstants.no,
+                      onTap: () => Navigator.pop(context, false),
+                      height: 25,
+                      width: 60,
+                      fSize: 11,
+                      radious: 5,
+                    ),
+                    SizedBox(width: 10),
+                    CommonWidgets().commonButton(
+                      title: AppConstants.yes,
+                      onTap: () => Navigator.pop(context, true),
+                      height: 25,
+                      width: 60,
+                      fSize: 11,
+                      radious: 5,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

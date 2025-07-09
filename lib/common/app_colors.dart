@@ -10,4 +10,6 @@ class AppColors {
   static Color shadowColor = Colors.black;
   static Color transparants = Colors.transparent;
   static Color dialogBGColor = Colors.white;
+  static Color greyColor = Colors.blueGrey;
+  static Color white = Colors.white;
 }
