@@ -10,6 +10,8 @@ class CommonWidgets {
   Widget commonTextFormField({
     required TextEditingController controller,
     required String lalbleText,
+    TextInputType? keyboardType,
+    int? maxLength,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
@@ -18,7 +20,10 @@ class CommonWidgets {
         style: TextStyle(height: 1, fontSize: 14),
         controller: controller,
         cursorHeight: 18,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
         decoration: InputDecoration(
+          counterText: '',
           labelText: lalbleText,
           border: OutlineInputBorder(),
         ),

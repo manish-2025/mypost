@@ -36,7 +36,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Widget build(BuildContext context) {
     screenSize = MediaQuery.of(context).size;
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
@@ -107,6 +110,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               CommonWidgets().commonTextFormField(
                 controller: profileCubit.mobileController,
                 lalbleText: AppConstants.mobileNum,
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
               ),
               CommonWidgets().commonTextFormField(
                 controller: profileCubit.occepationController,
@@ -115,6 +120,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               CommonWidgets().commonTextFormField(
                 controller: profileCubit.emailController,
                 lalbleText: AppConstants.email,
+                keyboardType: TextInputType.emailAddress,
               ),
               _buildDateTile(context: context),
               const SizedBox(height: 20),
@@ -212,13 +218,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Widget _buildDateTile({required BuildContext context}) {
     return GestureDetector(
       onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
         profileCubit.getBOD(context: context);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 45,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade400),
+          border: Border.all(color: AppColors.borderColor),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Center(
@@ -248,6 +255,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     required BuildContext context,
     required bool settingProfile,
   }) {
+    FocusScope.of(context).requestFocus(FocusNode());
     return showDialog(
       context: context,
       builder: (BuildContext context) {

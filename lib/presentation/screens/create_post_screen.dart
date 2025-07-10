@@ -166,7 +166,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   buildText(
                     text: userProfileData?.mobile ?? 'NA',
                     txtStyle: TextStyle(
-                      color: Colors.blueGrey,
+                      color: AppColors.white,
                       fontSize: 10,
                       height: 1.1,
                     ),
@@ -456,7 +456,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: Container(
                   padding: EdgeInsets.only(left: 5),
                   height: 40,
-                  decoration: BoxDecoration(color: Colors.amber),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    gradient: LinearGradient(
+                      colors: [Colors.red, AppColors.primaryColor],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -492,7 +499,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         child: Container(
           height: 70,
           width: 70,
-          color: Colors.amber,
+          decoration: BoxDecoration(
+            color: Colors.amber,
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
+          ),
+          clipBehavior: Clip.antiAlias,
           child: Image.file(
             File(userProfileData!.businessLogo),
             fit: BoxFit.fill,
